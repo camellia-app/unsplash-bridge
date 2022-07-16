@@ -2,8 +2,8 @@ import { createApi } from 'unsplash-js';
 import { Logger } from './logger';
 
 export class UnsplashApiError extends Error {
-  constructor(public readonly statucCode: number, public readonly errors: Array<string>) {
-    super(`Unsplash API returned ${statucCode} with following error messages: ${errors.join(' / ')}`);
+  constructor(public readonly statusCode: number, public readonly errors: Array<string>) {
+    super(`Unsplash API returned ${statusCode} with following error messages: ${errors.join(' / ')}`);
   }
 }
 

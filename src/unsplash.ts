@@ -47,6 +47,16 @@ const getUnsplashClient = (accessKey: string): ReturnType<typeof createApi> => {
 
       Logger.httpResponse(url, method, response.status);
 
+      const unsplashApiRateLimitingRemaining = response.headers.get('X-Ratelimit-Remaining');
+      const unsplashApiRateLimitingLimit = response.headers.get('X-Ratelimit-Limit');
+
+      if (unsplashApiRateLimitingRemaining !== null && unsplashApiRateLimitingLimit !== null) {
+        Logger.info(
+          'unsplash',
+          `API rate limits: ${unsplashApiRateLimitingRemaining} of ${unsplashApiRateLimitingLimit}`,
+        );
+      }
+
       return response;
     },
   });

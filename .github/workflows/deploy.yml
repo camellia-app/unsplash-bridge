@@ -1,0 +1,80 @@
+name: Deploy
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  cloudflare_worker:
+    runs-on: ubuntu-latest
+    name: Cloudflare Worker
+    concurrency: deploy-production
+
+    environment:
+      name: production
+      url: https://unsplash-bridge.camellia.app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install npm dependencies
+        run: npm ci --omit=dev --prefer-offline
+
+      - name: Build with Webpack
+        run: npx webpack
+        env:
+          NODE_ENV: production
+
+      - name: Run Wrangler
+        uses: cloudflare/wrangler-action@2.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          secrets: |
+            APP_VERSION
+            ENVIRONMENT_NAME
+            SENTRY_DSN
+            UNSPLASH_ACCESS_KEY
+        env:
+          APP_VERSION: ${{ github.event.repository.name }}@${{ github.event.release.tag_name }}
+          ENVIRONMENT_NAME: production
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+      - name: Upload dist folder as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dist
+          path: ./dist/
+          retention-days: 7
+
+  sentry_release:
+    runs-on: ubuntu-latest
+    name: Sentry Release
+    needs: [cloudflare_worker]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download dist folder
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: ./dist/
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1.1.6
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ github.event.repository.name }}
+        with:
+          environment: production
+          version: ${{ github.event.repository.name }}@${{ github.event.release.tag_name }}
+          sourcemaps: ./dist/
+          url_prefix: /

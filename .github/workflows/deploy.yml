@@ -13,7 +13,7 @@ jobs:
 
     environment:
       name: production
-      url: https://unsplash-bridge.camellia.app
+      url: https://unsplash.camellia.app
 
     steps:
       - name: Checkout repository

@@ -73,6 +73,8 @@ const apiProblemResponse = (
     {
       status: status,
       headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
         'Content-Type': 'application/problem+json; charset=UTF-8',
       },
     },
@@ -137,6 +139,8 @@ const processRandomCollectionEntryLoading = async (
 
   return new Response(JSON.stringify(entry), {
     headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET',
       'Cache-Control': 'public, max-age=1209600', // 14 days
       'Content-Type': 'application/json; charset=UTF-8',
     },

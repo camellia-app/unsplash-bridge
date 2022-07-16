@@ -19,6 +19,8 @@ type UnsplashPhoto = {
   image: Image;
   photographer: {
     avatar: {
+      large: Image;
+      medium: Image;
       small: Image;
     };
     name: string;
@@ -88,6 +90,20 @@ export const getRandomPhotoFromCollection = async (accessKey: string, collection
           resolution: {
             width: 32,
             height: 32,
+          },
+        },
+        medium: {
+          url: response.response.user.profile_image.medium,
+          resolution: {
+            width: 64,
+            height: 64,
+          },
+        },
+        large: {
+          url: response.response.user.profile_image.large,
+          resolution: {
+            width: 128,
+            height: 128,
           },
         },
       },

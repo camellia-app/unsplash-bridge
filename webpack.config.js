@@ -19,6 +19,11 @@ module.exports = {
         loader: 'ts-loader',
         options: {
           transpileOnly: true,
+          compilerOptions: {
+            inlineSources: true,
+            sourceMap: true,
+            sourceRoot: '/',
+          },
         },
       },
     ],

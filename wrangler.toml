@@ -1,6 +1,7 @@
 name = "unsplash-bridge"
 main = "dist/worker.js"
 compatibility_date = "2022-07-02"
+no_bundle = true
 
 [env.production]
 zone_id = "eae323d2de42cb464832ccc2295636fb"

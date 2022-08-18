@@ -1,6 +1,6 @@
 import Toucan from 'toucan-js';
 import { Logger } from './logger';
-import { getRandomPhotoFromCollection } from './unsplash';
+import { getMockedUnsplashPhoto, getRandomPhotoFromCollection } from './unsplash';
 
 declare const APP_VERSION: string;
 declare const ENVIRONMENT_NAME: string;
@@ -108,7 +108,9 @@ const randomCollectionEntryAction = async (unsplashAccessKey: string, request: R
     return parameterHasWrongValueResponse('id', 'Parameter should contain numeric ID of Unsplash collection.');
   }
 
-  return await processRandomCollectionEntryLoading(unsplashAccessKey, id);
+  const useMockedPhotoResponse = requestUrl.searchParams.get('mock') === '1';
+
+  return await processRandomCollectionEntryLoading(unsplashAccessKey, id, useMockedPhotoResponse);
 };
 
 const missingRequiredParameterResponse = (parameterName: string): Response => {
@@ -134,8 +136,11 @@ const internalServerErrorResponse = (): Response => {
 const processRandomCollectionEntryLoading = async (
   unsplashAccessKey: string,
   collectionId: string,
+  useMockedPhotoResponse: boolean,
 ): Promise<Response> => {
-  const entry = await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
+  const entry = useMockedPhotoResponse
+    ? getMockedUnsplashPhoto()
+    : await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
 
   return new Response(JSON.stringify(entry), {
     headers: {

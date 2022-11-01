@@ -7,7 +7,7 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
-    "@cloudflare/workers-types": "3.14.1",
+    "@cloudflare/workers-types": "3.18.0",
     "toucan-js": "2.6.1",
     "ts-loader": "9.3.1",
     "typescript": "4.7.4",

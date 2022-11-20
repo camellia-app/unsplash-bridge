@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@cloudflare/workers-types": "3.14.1",
-    "toucan-js": "2.6.1",
+    "toucan-js": "2.7.0",
     "ts-loader": "9.4.1",
     "typescript": "4.9.3",
     "unsplash-js": "7.0.15",

@@ -31,15 +31,24 @@ type UnsplashPhoto = {
 const getUnsplashClient = (accessKey: string): ReturnType<typeof createApi> => {
   return createApi({
     accessKey: accessKey,
-    fetch: async (request: Request | string, requestInitr?: Request | RequestInit): Promise<Response> => {
-      const url = typeof request !== 'string' ? request.url : request;
+    fetch: async (request, requestInitr) => {
+      let url = '';
+
+      if (typeof request === 'string') {
+        url = request;
+      } else if (request instanceof URL) {
+        url = request.toString();
+      } else {
+        url = request.url;
+      }
+
       let method = 'GET';
 
       if (requestInitr !== undefined && requestInitr.method !== undefined) {
         method = requestInitr.method;
       }
 
-      if (typeof request !== 'string') {
+      if (typeof request !== 'string' && 'method' in request) {
         method = request.method;
       }
 

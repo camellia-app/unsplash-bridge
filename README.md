@@ -17,12 +17,11 @@ Returns random photo from passed Unsplash collection.
 It accepts following query-parameters:
 
 - `id` — collection ID.
-- `mock` — pass `1` and the endpoint will always return the same mocked data (without sending actual request to Unsplash API). May be useful for development purposes.
 
 Example:
 
 ```http
-GET https://your-worker-name.workers.dev/random-collection-entry?id=123&mock=1
+GET https://your-worker-name.workers.dev/random-collection-entry?id=123
 ```
 
 Returns following JSON in response:

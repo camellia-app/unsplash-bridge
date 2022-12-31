@@ -142,11 +142,14 @@ const processRandomCollectionEntryLoading = async (
     ? getMockedUnsplashPhoto()
     : await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
 
+  const browserCacheTtl = 60 * 60 * 12; // 12h
+  const cdnCacheTtl = 60 * 60 * 12; // 12h
+
   return new Response(JSON.stringify(entry), {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
-      'Cache-Control': 'public, max-age=1209600', // 14 days
+      'Cache-Control': `public, max-age=${browserCacheTtl}, s-maxage=${cdnCacheTtl}`,
       'Content-Type': 'application/json; charset=UTF-8',
     },
   });

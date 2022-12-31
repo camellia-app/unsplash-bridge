@@ -47,26 +47,13 @@ addEventListener('fetch', (event) => {
           case '/random-collection-entry': {
             const request = event.request;
             const cacheUrl = new URL(request.url);
-
-            // Construct the cache key from the cache URL
             const cacheKey = new Request(cacheUrl.toString(), request);
 
-            // Check whether the value is already available in the cache
-            // if not, you will need to fetch it from origin, and store it in the cache
-            // for future access
             let response = await cache.match(cacheKey);
 
             if (response === undefined) {
-              console.log(
-                `Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
-              );
-
-              // If not in cache, get it from origin
               response = await randomCollectionEntryAction(UNSPLASH_ACCESS_KEY, request);
 
-              // Store the fetched response as cacheKey
-              // Use waitUntil so you can return the response without blocking on
-              // writing to cache
               event.waitUntil(cache.put(cacheKey, response.clone()));
             }
 

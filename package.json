@@ -14,7 +14,7 @@
     "unsplash-js": "7.0.15",
     "webpack": "5.75.0",
     "webpack-cli": "5.0.1",
-    "wrangler": "2.5.0"
+    "wrangler": "2.6.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "5.45.0",

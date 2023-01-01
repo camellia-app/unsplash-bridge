@@ -64,3 +64,23 @@ Returns following JSON in response:
   }
 }
 ```
+
+## Developing the worker
+
+Clone the repository. Then, install dependencies:
+
+```bash
+npm ci
+```
+
+Start webpack:
+
+```bash
+webpack watch
+```
+
+Open another terminal and then run the worker in development mode:
+
+```bash
+wrangler dev
+```

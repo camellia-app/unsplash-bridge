@@ -9,7 +9,7 @@ export type Env = {
   UNSPLASH_ACCESS_KEY: string;
 };
 
-export const worker = {
+export default {
   async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
     const sentry = new Toucan({
       dsn: env.SENTRY_DSN,
@@ -25,9 +25,9 @@ export const worker = {
       },
     });
 
-    const cache = caches.default;
-
     Logger.setSentryClient(sentry);
+
+    const cache = caches.default;
 
     const requestUrl = new URL(request.url);
 

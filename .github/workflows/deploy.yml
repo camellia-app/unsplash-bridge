@@ -61,6 +61,10 @@ jobs:
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
+      # see: https://github.com/cloudflare/wrangler-action/issues/15#issuecomment-1117227042
+      - name: Fix permissions broken by cloudflare/wrangler-action
+        run: sudo chown -R $(id -un):$(id -gn) ${{ github.workspace }}
+
       - name: Upload dist folder as artifact
         uses: actions/upload-artifact@v3
         with:

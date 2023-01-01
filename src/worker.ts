@@ -1,76 +1,66 @@
-import Toucan from 'toucan-js';
+import { Toucan } from 'toucan-js';
 import { Logger } from './logger';
 import { getRandomPhotoFromCollection } from './unsplash';
 
-declare const APP_VERSION: string;
-declare const ENVIRONMENT_NAME: string;
-declare const SENTRY_DSN: string;
-declare const UNSPLASH_ACCESS_KEY: string;
+export type Env = {
+  APP_VERSION: string;
+  ENVIRONMENT_NAME: string;
+  SENTRY_DSN: string;
+  UNSPLASH_ACCESS_KEY: string;
+};
 
-addEventListener('fetch', (event) => {
-  const sentry = new Toucan({
-    dsn: SENTRY_DSN,
-    release: APP_VERSION,
-    environment: ENVIRONMENT_NAME,
-    context: event,
-    allowedCookies: /(.*)/,
-    allowedHeaders: /(.*)/,
-    allowedSearchParams: /(.*)/,
-    rewriteFrames: {
-      root: '/',
-    },
-  });
-
-  const cache = caches.default;
-
-  const request = event.request;
-
-  const clientIp = request.headers.get('cf-connecting-ip');
-
-  Logger.setSentryClient(sentry);
-
-  if (clientIp !== null) {
-    sentry.setUser({
-      ip_address: clientIp,
+export const worker = {
+  async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
+    const sentry = new Toucan({
+      dsn: env.SENTRY_DSN,
+      release: env.APP_VERSION,
+      environment: env.ENVIRONMENT_NAME,
+      context,
+      request,
+      requestDataOptions: {
+        allowedCookies: true,
+        allowedHeaders: true,
+        allowedSearchParams: true,
+        allowedIps: true,
+      },
     });
-  }
 
-  event.respondWith(
-    (async (): Promise<Response> => {
-      const requestUrl = new URL(request.url);
+    const cache = caches.default;
 
-      try {
-        switch (requestUrl.pathname) {
-          case '/':
-            return healthAction(APP_VERSION);
+    Logger.setSentryClient(sentry);
 
-          case '/random-collection-entry': {
-            const request = event.request;
-            const cacheUrl = new URL(request.url);
-            const cacheKey = new Request(cacheUrl.toString(), request);
+    const requestUrl = new URL(request.url);
 
-            let response = await cache.match(cacheKey);
+    try {
+      switch (requestUrl.pathname) {
+        case '/':
+          return healthAction(env.APP_VERSION);
 
-            if (response === undefined) {
-              response = await randomCollectionEntryAction(UNSPLASH_ACCESS_KEY, request);
+        case '/random-collection-entry': {
+          const cacheUrl = new URL(request.url);
+          const cacheKey = new Request(cacheUrl.toString(), request);
 
-              event.waitUntil(cache.put(cacheKey, response.clone()));
-            }
+          let response = await cache.match(cacheKey);
 
-            return response;
+          if (response === undefined) {
+            response = await randomCollectionEntryAction(env.UNSPLASH_ACCESS_KEY, request);
+
+            context.waitUntil(cache.put(cacheKey, response.clone()));
           }
 
-          default:
-            return endpointNotFoundResponse();
+          return response;
         }
-      } catch (error: unknown) {
-        sentry.captureException(error);
 
-        return internalServerErrorResponse();
+        default:
+          return endpointNotFoundResponse();
       }
-    })(),
-  );
-});
+    } catch (error: unknown) {
+      sentry.captureException(error);
+
+      return internalServerErrorResponse();
+    }
+  },
+};
 
 const apiProblemResponse = (
   status: number,

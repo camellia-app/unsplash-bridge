@@ -1,5 +1,5 @@
-import type Toucan from 'toucan-js';
-import type { Level } from 'toucan-js';
+import type { SeverityLevel } from '@sentry/types/types/severity';
+import type { Toucan } from 'toucan-js';
 
 export class Logger {
   private static sentryClient: Toucan | undefined = undefined;
@@ -84,7 +84,7 @@ export class Logger {
   private static readonly addSentryBreadcrumb = (event: {
     category: string;
     data?: { [key: string]: unknown };
-    level: Level;
+    level: SeverityLevel;
     message?: string;
     type: string;
   }): void => {

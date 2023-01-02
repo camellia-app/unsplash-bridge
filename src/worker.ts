@@ -25,6 +25,8 @@ export default {
       },
     });
 
+    sentry.startSession();
+
     Logger.setSentryClient(sentry);
 
     const cache = caches.default;
@@ -58,6 +60,8 @@ export default {
       sentry.captureException(error);
 
       return internalServerErrorResponse();
+    } finally {
+      sentry.captureSession(true);
     }
   },
 };

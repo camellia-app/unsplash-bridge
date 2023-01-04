@@ -15,7 +15,7 @@ type Image = {
   url: string;
 };
 
-type UnsplashPhoto = {
+export type UnsplashPhoto = {
   image: Image;
   photographer: {
     avatar: {

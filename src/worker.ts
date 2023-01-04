@@ -1,6 +1,7 @@
 import { Toucan } from 'toucan-js';
 import { Logger } from './logger';
-import { getRandomPhotoFromCollection } from './unsplash';
+import type { UnsplashPhoto } from './unsplash';
+import { getRandomPhotoFromCollection, UnsplashApiError } from './unsplash';
 
 export type Env = {
   APP_VERSION: string;
@@ -144,12 +145,25 @@ const processRandomCollectionEntryLoading = async (
   unsplashAccessKey: string,
   collectionId: string,
 ): Promise<Response> => {
-  const entry = await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
+  let photo: UnsplashPhoto;
+
+  try {
+    photo = await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
+  } catch (error: unknown) {
+    if (error instanceof UnsplashApiError) {
+      switch (error.statusCode) {
+        case 404:
+          return apiProblemResponse(400, 'Collection with passed ID not found.', 'collection_not_found');
+      }
+    }
+
+    throw error;
+  }
 
   const browserCacheTtl = 60 * 60 * 12; // 12h
   const cdnCacheTtl = 60 * 60 * 12; // 12h
 
-  return new Response(JSON.stringify(entry), {
+  return new Response(JSON.stringify(photo), {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',

@@ -73,8 +73,24 @@ const getUnsplashClient = (accessKey: string): ReturnType<typeof createApi> => {
     },
   });
 };
+export const notifyUnsplashAboutDownload = async (accessKey: string, downloadUrl: string): Promise<void> => {
+  const unsplash = getUnsplashClient(accessKey);
 
-export const getRandomPhotoFromCollection = async (accessKey: string, collectionId: string): Promise<UnsplashPhoto> => {
+  const response = await unsplash.photos.trackDownload({
+    downloadLocation: downloadUrl,
+  });
+
+  if (response.type === 'error') {
+    throw new UnsplashApiError(response.status, response.errors);
+  }
+
+  Logger.info('unsplash', `Notified about downloading by URL "${downloadUrl}"`);
+};
+
+export const getRandomPhotoFromCollection = async (
+  accessKey: string,
+  collectionId: string,
+): Promise<[string, UnsplashPhoto]> => {
   const unsplash = getUnsplashClient(accessKey);
 
   const response = await unsplash.photos.getRandom({
@@ -91,41 +107,44 @@ export const getRandomPhotoFromCollection = async (accessKey: string, collection
 
   Logger.info('unsplash', `Randomly picked photo with ID "${response.response.id}" by ${response.response.user.name}`);
 
-  return {
-    photographer: {
-      url: response.response.user.links.html,
-      name: response.response.user.name,
-      avatar: {
-        small: {
-          url: response.response.user.profile_image.small,
-          resolution: {
-            width: 32,
-            height: 32,
+  return [
+    response.response.links.download_location,
+    {
+      photographer: {
+        url: response.response.user.links.html,
+        name: response.response.user.name,
+        avatar: {
+          small: {
+            url: response.response.user.profile_image.small,
+            resolution: {
+              width: 32,
+              height: 32,
+            },
           },
-        },
-        medium: {
-          url: response.response.user.profile_image.medium,
-          resolution: {
-            width: 64,
-            height: 64,
+          medium: {
+            url: response.response.user.profile_image.medium,
+            resolution: {
+              width: 64,
+              height: 64,
+            },
           },
-        },
-        large: {
-          url: response.response.user.profile_image.large,
-          resolution: {
-            width: 128,
-            height: 128,
+          large: {
+            url: response.response.user.profile_image.large,
+            resolution: {
+              width: 128,
+              height: 128,
+            },
           },
         },
       },
-    },
-    webPageUrl: response.response.links.html,
-    image: {
-      url: response.response.urls.full,
-      resolution: {
-        width: response.response.width,
-        height: response.response.height,
+      webPageUrl: response.response.links.html,
+      image: {
+        url: response.response.urls.full,
+        resolution: {
+          width: response.response.width,
+          height: response.response.height,
+        },
       },
     },
-  };
+  ];
 };

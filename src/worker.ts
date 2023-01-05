@@ -1,7 +1,7 @@
 import { Toucan } from 'toucan-js';
 import { Logger } from './logger';
 import type { UnsplashPhoto } from './unsplash';
-import { getRandomPhotoFromCollection, UnsplashApiError } from './unsplash';
+import { getRandomPhotoFromCollection, notifyUnsplashAboutDownload, UnsplashApiError } from './unsplash';
 
 export type Env = {
   APP_VERSION: string;
@@ -46,7 +46,7 @@ export default {
           let response = await cache.match(cacheKey);
 
           if (response === undefined) {
-            response = await randomCollectionEntryAction(env.UNSPLASH_ACCESS_KEY, request);
+            response = await randomCollectionEntryAction(context, env.UNSPLASH_ACCESS_KEY, request);
 
             context.waitUntil(cache.put(cacheKey, response.clone()));
           }
@@ -105,7 +105,11 @@ const healthAction = (appVersion: string): Response => {
   );
 };
 
-const randomCollectionEntryAction = async (unsplashAccessKey: string, request: Request): Promise<Response> => {
+const randomCollectionEntryAction = async (
+  context: ExecutionContext,
+  unsplashAccessKey: string,
+  request: Request,
+): Promise<Response> => {
   const requestUrl = new URL(request.url);
 
   const id = requestUrl.searchParams.get('id');
@@ -118,7 +122,7 @@ const randomCollectionEntryAction = async (unsplashAccessKey: string, request: R
     return parameterHasWrongValueResponse('id', 'Parameter should contain numeric ID of Unsplash collection.');
   }
 
-  return await processRandomCollectionEntryLoading(unsplashAccessKey, id);
+  return await processRandomCollectionEntryLoading(context, unsplashAccessKey, id);
 };
 
 const missingRequiredParameterResponse = (parameterName: string): Response => {
@@ -142,13 +146,15 @@ const internalServerErrorResponse = (): Response => {
 };
 
 const processRandomCollectionEntryLoading = async (
+  context: ExecutionContext,
   unsplashAccessKey: string,
   collectionId: string,
 ): Promise<Response> => {
   let photo: UnsplashPhoto;
+  let downloadNotificationUrl: string;
 
   try {
-    photo = await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
+    [downloadNotificationUrl, photo] = await getRandomPhotoFromCollection(unsplashAccessKey, collectionId);
   } catch (error: unknown) {
     if (error instanceof UnsplashApiError) {
       switch (error.statusCode) {
@@ -159,6 +165,8 @@ const processRandomCollectionEntryLoading = async (
 
     throw error;
   }
+
+  context.waitUntil(notifyUnsplashAboutDownload(unsplashAccessKey, downloadNotificationUrl));
 
   const browserCacheTtl = 60 * 60 * 12; // 12h
   const cdnCacheTtl = 60 * 60 * 12; // 12h

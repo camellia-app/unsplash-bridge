@@ -24,6 +24,7 @@ export type UnsplashPhoto = {
       small: Image;
     };
     name: string;
+    url: string;
   };
   webPageUrl: string;
 };
@@ -92,6 +93,7 @@ export const getRandomPhotoFromCollection = async (accessKey: string, collection
 
   return {
     photographer: {
+      url: response.response.user.links.html,
       name: response.response.user.name,
       avatar: {
         small: {

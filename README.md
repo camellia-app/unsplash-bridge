@@ -30,6 +30,7 @@ Returns following JSON in response:
 {
   "photographer": {
     "name": "Nick Night",
+    "url": "https://unsplash.com/@lvenfoto",
     "avatar": {
       "small": {
         "url": "https://images.unsplash.com/profile-1575888295849-0025f8946dfcimage?ixlib=rb-1.2.1&crop=faces&fit=crop&w=32&h=32",

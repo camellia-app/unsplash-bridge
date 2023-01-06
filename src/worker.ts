@@ -161,7 +161,7 @@ const processRandomCollectionEntryLoading = async (
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
-      'Cache-Control': `public, max-age=${browserCacheTtl}`,
+      'Cache-Control': `public, max-age=${browserCacheTtl}, immutable`,
       'Content-Type': 'application/json; charset=UTF-8',
     },
   });

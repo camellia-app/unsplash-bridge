@@ -27,7 +27,7 @@ Returns random photo from passed Unsplash collection.
 
 It also notifies Unsplash about downloads. See "[Guideline: Triggering a Download](https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download)" for more details.
 
-A response is cached in Cloudflare CDN and on client for 12 hours.
+A response is cached on clients for 12 hours with `Cache-Control` header.
 
 It accepts following query-parameters:
 

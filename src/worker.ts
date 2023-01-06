@@ -30,8 +30,6 @@ export default {
 
     Logger.setSentryClient(sentry);
 
-    const cache = caches.default;
-
     const requestUrl = new URL(request.url);
 
     try {
@@ -40,18 +38,7 @@ export default {
           return healthAction(env.APP_VERSION);
 
         case '/random-collection-entry': {
-          const cacheUrl = new URL(request.url);
-          const cacheKey = new Request(cacheUrl.toString(), request);
-
-          let response = await cache.match(cacheKey);
-
-          if (response === undefined) {
-            response = await randomCollectionEntryAction(context, env.UNSPLASH_ACCESS_KEY, request);
-
-            context.waitUntil(cache.put(cacheKey, response.clone()));
-          }
-
-          return response;
+          return await randomCollectionEntryAction(context, env.UNSPLASH_ACCESS_KEY, request);
         }
 
         default:
@@ -169,13 +156,12 @@ const processRandomCollectionEntryLoading = async (
   context.waitUntil(notifyUnsplashAboutDownload(unsplashAccessKey, downloadNotificationUrl));
 
   const browserCacheTtl = 60 * 60 * 12; // 12h
-  const cdnCacheTtl = 60 * 60 * 12; // 12h
 
   return new Response(JSON.stringify(photo), {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
-      'Cache-Control': `public, max-age=${browserCacheTtl}, s-maxage=${cdnCacheTtl}`,
+      'Cache-Control': `public, max-age=${browserCacheTtl}`,
       'Content-Type': 'application/json; charset=UTF-8',
     },
   });

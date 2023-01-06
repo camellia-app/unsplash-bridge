@@ -6,6 +6,17 @@ Cloudflare Workers are like serverless cloud functions, but they also can cache 
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/camellia-app/unsplash-bridge)
 
+## Motivation
+
+This is a bridge to [Unsplash Image API](https://unsplash.com/developers) which respects [Unsplash API Guidelines](https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines).
+
+Current implementation solves following problems:
+
+- Hides [Unsplash API Access Key](https://unsplash.com/documentation#public-authentication) on server side, so you don't need to pass access key to your client-side application, which is not secure and forbidden by [Unsplash API Guidelines](https://help.unsplash.com/en/articles/2511245-unsplash-api-guidelines).
+- Automatically notifies Unsplash about photo downloads, which is also mandatory by Unsplash. It means when a photo is _picked_ or _used_ for something, you should notify Unsplash about this. The worker handles this automatically. See "[Guideline: Triggering a Download](https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download)" for more details.
+
+It was developed to be used for [Camellia](https://github.com/camellia-app/camellia) needs, so the current subset of features is pretty limited.
+
 ## API
 
 The bridge exposes following endpoints:
@@ -13,6 +24,10 @@ The bridge exposes following endpoints:
 ### GET `/random-collection-entry`
 
 Returns random photo from passed Unsplash collection.
+
+It also notifies Unsplash about downloads. See "[Guideline: Triggering a Download](https://help.unsplash.com/en/articles/2511258-guideline-triggering-a-download)" for more details.
+
+A response is cached in Cloudflare CDN and on client for 12 hours.
 
 It accepts following query-parameters:
 

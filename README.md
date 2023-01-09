@@ -43,6 +43,13 @@ Returns following JSON in response:
 
 ```json
 {
+  "image": {
+    "url": "https://images.unsplash.com/photo-1634482895955-712847090dfd?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwxNDQwNjN8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjA4NTA5OTc&ixlib=rb-1.2.1&q=80",
+    "resolution": {
+      "width": 3591,
+      "height": 2394
+    }
+  },
   "photographer": {
     "name": "Nick Night",
     "url": "https://unsplash.com/@lvenfoto",
@@ -70,14 +77,7 @@ Returns following JSON in response:
       }
     }
   },
-  "webPageUrl": "https://unsplash.com/photos/y3sKIJqiY40",
-  "image": {
-    "url": "https://images.unsplash.com/photo-1634482895955-712847090dfd?crop=entropy&cs=tinysrgb&fm=jpg&ixid=MnwxNDQwNjN8MHwxfHJhbmRvbXx8fHx8fHx8fDE2NjA4NTA5OTc&ixlib=rb-1.2.1&q=80",
-    "resolution": {
-      "width": 3591,
-      "height": 2394
-    }
-  }
+  "webPageUrl": "https://unsplash.com/photos/y3sKIJqiY40"
 }
 ```
 

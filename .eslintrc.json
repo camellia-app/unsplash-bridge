@@ -1,10 +1,7 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
   "env": {
     "worker": true
   },
-  "plugins": ["@typescript-eslint", "typescript-sort-keys", "sort-keys-fix", "unused-imports"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -13,19 +10,6 @@
     "plugin:import/typescript",
     "prettier"
   ],
-  "rules": {
-    "import/no-cycle": "error",
-    "import/order": [
-      "warn",
-      {
-        "alphabetize": { "order": "asc", "caseInsensitive": true },
-        "newlines-between": "never",
-        "warnOnUnassignedImports": false
-      }
-    ],
-    "unused-imports/no-unused-imports": "warn",
-    "unused-imports/no-unused-vars": "warn"
-  },
   "overrides": [
     {
       "files": ["webpack.config.js"],
@@ -78,5 +62,21 @@
         "@typescript-eslint/switch-exhaustiveness-check": "error"
       }
     }
-  ]
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "typescript-sort-keys", "sort-keys-fix", "unused-imports"],
+  "root": true,
+  "rules": {
+    "import/no-cycle": "error",
+    "import/order": [
+      "warn",
+      {
+        "alphabetize": { "order": "asc", "caseInsensitive": true },
+        "newlines-between": "never",
+        "warnOnUnassignedImports": false
+      }
+    ],
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": "warn"
+  }
 }

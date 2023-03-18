@@ -10,7 +10,7 @@
     "toucan-js": "3.1.0",
     "ts-loader": "9.4.2",
     "unsplash-js": "7.0.15",
-    "webpack": "5.76.0",
+    "webpack": "5.76.2",
     "webpack-cli": "5.0.1",
     "wrangler": "2.12.3"
   },

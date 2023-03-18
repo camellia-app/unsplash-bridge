@@ -15,7 +15,7 @@
     "wrangler": "2.12.0"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20230221.0",
+    "@cloudflare/workers-types": "4.20230307.0",
     "@typescript-eslint/eslint-plugin": "5.53.0",
     "@typescript-eslint/parser": "5.53.0",
     "eslint": "8.35.0",

@@ -9,7 +9,7 @@
   "dependencies": {
     "toucan-js": "3.1.0",
     "ts-loader": "9.4.3",
-    "unsplash-js": "7.0.15",
+    "unsplash-js": "7.0.18",
     "webpack": "5.84.1",
     "webpack-cli": "5.1.1",
     "wrangler": "2.14.0"

@@ -66,7 +66,7 @@ jobs:
         run: sudo chown -R $(id -un):$(id -gn) ${{ github.workspace }}
 
       - name: Upload dist folder as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: ./dist/

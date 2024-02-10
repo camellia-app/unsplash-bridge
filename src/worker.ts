@@ -1,7 +1,9 @@
 import { Toucan } from 'toucan-js';
-import { Logger } from './logger';
+
 import type { UnsplashPhoto } from './unsplash';
-import { getRandomPhotoFromCollection, notifyUnsplashAboutDownload, UnsplashApiError } from './unsplash';
+
+import { Logger } from './logger';
+import { UnsplashApiError, getRandomPhotoFromCollection, notifyUnsplashAboutDownload } from './unsplash';
 
 export type Env = {
   APP_VERSION: string;
@@ -13,16 +15,16 @@ export type Env = {
 export default {
   async fetch(request: Request, env: Env, context: ExecutionContext): Promise<Response> {
     const sentry = new Toucan({
-      dsn: env.SENTRY_DSN,
-      release: env.APP_VERSION,
-      environment: env.ENVIRONMENT_NAME,
       context,
+      dsn: env.SENTRY_DSN,
+      environment: env.ENVIRONMENT_NAME,
+      release: env.APP_VERSION,
       request,
       requestDataOptions: {
         allowedCookies: true,
         allowedHeaders: true,
-        allowedSearchParams: true,
         allowedIps: true,
+        allowedSearchParams: true,
       },
     });
 
@@ -62,18 +64,18 @@ const apiProblemResponse = (
 ): Response => {
   return new Response(
     JSON.stringify({
+      detail: description,
       status: status,
       type: type,
-      detail: description,
       ...additionalProperties,
     }),
     {
-      status: status,
       headers: {
-        'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Origin': '*',
         'Content-Type': 'application/problem+json; charset=UTF-8',
       },
+      status: status,
     },
   );
 };
@@ -159,8 +161,8 @@ const processRandomCollectionEntryLoading = async (
 
   return new Response(JSON.stringify(photo), {
     headers: {
-      'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',
+      'Access-Control-Allow-Origin': '*',
       'Cache-Control': `public, max-age=${browserCacheTtl}, immutable`,
       'Content-Type': 'application/json; charset=UTF-8',
     },

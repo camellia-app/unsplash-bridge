@@ -1,8 +1,12 @@
 import { createApi } from 'unsplash-js';
+
 import { Logger } from './logger';
 
 export class UnsplashApiError extends Error {
-  constructor(public readonly statusCode: number, public readonly errors: Array<string>) {
+  constructor(
+    public readonly statusCode: number,
+    public readonly errors: Array<string>,
+  ) {
     super(`Unsplash API returned ${statusCode} with following error messages: ${errors.join(' / ')}`);
   }
 }
@@ -110,41 +114,41 @@ export const getRandomPhotoFromCollection = async (
   return [
     response.response.links.download_location,
     {
+      image: {
+        resolution: {
+          height: response.response.height,
+          width: response.response.width,
+        },
+        url: response.response.urls.full,
+      },
       photographer: {
-        url: response.response.user.links.html,
-        name: response.response.user.name,
         avatar: {
-          small: {
-            url: response.response.user.profile_image.small,
+          large: {
             resolution: {
-              width: 32,
-              height: 32,
+              height: 128,
+              width: 128,
             },
+            url: response.response.user.profile_image.large,
           },
           medium: {
-            url: response.response.user.profile_image.medium,
             resolution: {
-              width: 64,
               height: 64,
+              width: 64,
             },
+            url: response.response.user.profile_image.medium,
           },
-          large: {
-            url: response.response.user.profile_image.large,
+          small: {
             resolution: {
-              width: 128,
-              height: 128,
+              height: 32,
+              width: 32,
             },
+            url: response.response.user.profile_image.small,
           },
         },
+        name: response.response.user.name,
+        url: response.response.user.links.html,
       },
       webPageUrl: response.response.links.html,
-      image: {
-        url: response.response.urls.full,
-        resolution: {
-          width: response.response.width,
-          height: response.response.height,
-        },
-      },
     },
   ];
 };

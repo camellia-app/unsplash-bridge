@@ -2,49 +2,14 @@ import type { SeverityLevel } from '@sentry/types/types/severity';
 import type { Toucan } from 'toucan-js';
 
 export class Logger {
-  private static sentryClient: Toucan | undefined = undefined;
-
-  public static readonly setSentryClient = (sentryClient: Toucan): void => {
-    this.sentryClient = sentryClient;
-  };
-
-  public static readonly httpRequest = (url: string, method: string): void => {
-    console.info(`[http] Request: ${method.toUpperCase()} ${url}`);
-
-    this.addSentryBreadcrumb({
-      type: 'http',
-      category: 'request',
-      level: 'info',
-      data: {
-        method: method,
-        url: url,
-      },
-    });
-  };
-
-  public static readonly httpResponse = (url: string, method: string, status_code: number): void => {
-    console.info(`[http] Response: ${method.toUpperCase()} ${url} [${status_code}]`);
-
-    this.addSentryBreadcrumb({
-      type: 'http',
-      category: 'response',
-      level: 'info',
-      data: {
-        method: method,
-        url: url,
-        status_code: status_code,
-      },
-    });
-  };
-
   public static readonly debug = (category: string, message: string): void => {
     console.debug(`[${category}] ${message}`);
 
     this.addSentryBreadcrumb({
-      type: 'debug',
       category: category,
       level: 'debug',
       message: message,
+      type: 'debug',
     });
   };
 
@@ -52,10 +17,39 @@ export class Logger {
     console.error(`[${category}] ${message}`);
 
     this.addSentryBreadcrumb({
-      type: 'error',
       category: category,
       level: 'error',
       message: message,
+      type: 'error',
+    });
+  };
+
+  public static readonly httpRequest = (url: string, method: string): void => {
+    console.info(`[http] Request: ${method.toUpperCase()} ${url}`);
+
+    this.addSentryBreadcrumb({
+      category: 'request',
+      data: {
+        method: method,
+        url: url,
+      },
+      level: 'info',
+      type: 'http',
+    });
+  };
+
+  public static readonly httpResponse = (url: string, method: string, status_code: number): void => {
+    console.info(`[http] Response: ${method.toUpperCase()} ${url} [${status_code}]`);
+
+    this.addSentryBreadcrumb({
+      category: 'response',
+      data: {
+        method: method,
+        status_code: status_code,
+        url: url,
+      },
+      level: 'info',
+      type: 'http',
     });
   };
 
@@ -63,21 +57,25 @@ export class Logger {
     console.info(`[${category}] ${message}`);
 
     this.addSentryBreadcrumb({
-      type: 'info',
       category: category,
       level: 'info',
       message: message,
+      type: 'info',
     });
+  };
+
+  public static readonly setSentryClient = (sentryClient: Toucan): void => {
+    this.sentryClient = sentryClient;
   };
 
   public static readonly warning = (category: string, message: string): void => {
     console.warn(`[${category}] ${message}`);
 
     this.addSentryBreadcrumb({
-      type: 'info',
       category: category,
       level: 'warning',
       message: message,
+      type: 'info',
     });
   };
 
@@ -94,4 +92,6 @@ export class Logger {
 
     this.sentryClient.addBreadcrumb(event);
   };
+
+  private static sentryClient: Toucan | undefined = undefined;
 }

@@ -1,37 +1,37 @@
 const path = require('path');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'src', 'worker.ts'),
-  output: {
-    filename: 'worker.js',
-    path: path.resolve(__dirname, 'dist'),
-    module: true,
-    library: {
-      type: 'module',
-    },
-  },
   devtool: 'source-map',
-  mode: 'production',
-  resolve: {
-    extensions: ['.ts', '.js'],
-  },
+  entry: path.resolve(__dirname, 'src', 'worker.ts'),
   experiments: {
     outputModule: true,
   },
+  mode: 'production',
   module: {
     rules: [
       {
-        test: /\.ts$/,
         loader: 'ts-loader',
         options: {
-          transpileOnly: true,
           compilerOptions: {
             inlineSources: true,
             sourceMap: true,
             sourceRoot: '/',
           },
+          transpileOnly: true,
         },
+        test: /\.ts$/,
       },
     ],
+  },
+  output: {
+    filename: 'worker.js',
+    library: {
+      type: 'module',
+    },
+    module: true,
+    path: path.resolve(__dirname, 'dist'),
+  },
+  resolve: {
+    extensions: ['.ts', '.js'],
   },
 };

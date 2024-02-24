@@ -14,7 +14,7 @@
     "unsplash-js": "7.0.19",
     "webpack": "5.90.1",
     "webpack-cli": "5.1.4",
-    "wrangler": "3.28.1"
+    "wrangler": "3.29.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "4.20240208.0",

@@ -46,7 +46,7 @@ jobs:
           NODE_ENV: production
 
       - name: Run Wrangler
-        uses: cloudflare/wrangler-action@v3.6.1
+        uses: cloudflare/wrangler-action@v3.11.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}

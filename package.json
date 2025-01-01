@@ -13,7 +13,7 @@
     "ts-loader": "9.5.1",
     "unsplash-js": "7.0.19",
     "webpack": "5.91.0",
-    "webpack-cli": "5.1.4",
+    "webpack-cli": "6.0.1",
     "wrangler": "3.41.0"
   },
   "devDependencies": {
